@@ -57,5 +57,18 @@ describe ISO3166::Parser do
         expect { subject.parse(invalid_input) }.to raise_error(ISO3166::ParseError)
       end
     end
+
+    context "with the file downloaded from ISO as input" do
+      let(:input) { File.new(File.expand_path('../../lib/iso3166/list-en1-semic-3.txt', __FILE__)) }
+
+      it "correctly handles the ISO-8859-1 encoding" do
+        # ÅLAND ISLANDS contains a special character,
+        # so it is a good test case that the conversion from ISO-8859-1
+        # to UTF-8 happens as it should.
+        aland_islands = subject.parse(input)[1]
+
+        aland_islands.english_short_name.scan(/./mu).size.should == 13
+      end
+    end
   end
 end
