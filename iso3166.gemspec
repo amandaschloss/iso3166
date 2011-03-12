@@ -8,9 +8,19 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Vladimir Andrijevik"]
   s.email       = ["vladimir@andrijevik.net"]
-  s.homepage    = ""
-  s.summary     = %q{TODO: Write a gem summary}
-  s.description = %q{TODO: Write a gem description}
+  s.homepage    = "https://github.com/vandrijevik/iso3166"
+  s.summary     = "A Ruby library containing the short country names and alpha-2 codes from ISO 3166-1"
+  s.description = <<-END_OF_DESCRIPTION.gsub(/^ .*/,"")
+    ISO 3166-1 provides a database of information on country names
+    and short codes. While the full database is not free, the
+    Maintenance Agency for ISO 3166 country codes provides a list of
+    the names and 2-character codes for the countries included in the
+    standard.
+    
+    Per their website, "The short country names from ISO 3166-1 and the 
+    alpha-2 codes are made available by ISO at no charge for 
+    internal use and non-commercial purposes" so please use accordingly.
+  END_OF_DESCRIPTION
 
   s.rubyforge_project = "iso3166"
 
