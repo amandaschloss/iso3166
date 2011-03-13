@@ -2,43 +2,77 @@
 require "spec_helper"
 
 describe ISO3166::Country do
-  subject { ISO3166::Country.new("", "") }
+  subject { ISO3166::Country.new("", "", "") }
   it { should respond_to(:alpha2) }
   it { should respond_to(:english_short_name) }
+  it { should respond_to(:french_short_name) }
 
   describe "#initialize" do
-    it "sets english_short_name from the first argument" do
-      country = ISO3166::Country.new("SERBIA", "RS")
-
-      country.english_short_name.should == "SERBIA"
-    end
+    subject { ISO3166::Country.new("RS", "SERBIA", "SERBIE") }
 
     it "sets alpha2 from the first argument" do
-      country = ISO3166::Country.new("SERBIA", "RS")
+      subject.alpha2.should == "RS"
+    end
 
-      country.alpha2.should == "RS"
+    it "sets english_short_name from the second argument" do
+      subject.english_short_name.should == "SERBIA"
+    end
+
+    it "sets french_short_name from the second argument" do
+      subject.french_short_name.should == "SERBIE"
     end
   end
 
   describe "#==" do
-    it "returns true when both alpha2 and english_short_name match" do
-      ISO3166::Country.new("COUNTRY", "XX").should == ISO3166::Country.new("COUNTRY", "XX")
-    end
-
     it "returns false when alpha2 does not match" do
-      ISO3166::Country.new("COUNTRY", "XX").should_not == ISO3166::Country.new("COUNTRY", "ZZ")
+      ISO3166::Country.new("XX", "COUNTRY", "PAYS").should_not == ISO3166::Country.new("ZZ", "COUNTRY", "PAYS")
     end
 
     it "returns false when english_short_name does not match" do
-      ISO3166::Country.new("COUNTRY1", "XX").should_not == ISO3166::Country.new("COUNTRY2", "XX")
+      ISO3166::Country.new("XX", "COUNTRY1", "PAYS").should_not == ISO3166::Country.new("XX", "COUNTRY2", "PAYS")
+    end
+
+    it "returns false when french_short_name does not match" do
+      ISO3166::Country.new("XX", "COUNTRY", "PAYS1").should_not == ISO3166::Country.new("XX", "COUNTRY", "PAYS2")
     end
   end
 
   describe "::all" do
     subject { ISO3166::Country.all }
 
-    it "returns the value of ISO3166::Country::ALL" do
-      subject.should == ISO3166::Country::ALL
+    it "returns an array" do
+      subject.should be_instance_of(Array)
+    end
+
+    it "has country objects as elements of the array" do
+      subject.should_not be_empty, "This test makes no sense if the array is empty"
+      subject.each { |element| element.should be_instance_of(ISO3166::Country) }
+    end
+
+    it "includes alpha2 for countries" do
+      subject.first.alpha2.should_not be_empty
+    end
+
+    it "includes english_short_name for countries" do
+      subject.first.english_short_name.should_not be_empty
+    end
+
+    it "includes french_short_name for countries" do
+      subject.first.french_short_name.should_not be_empty
+    end
+
+    it "parses the data files only once" do
+      any_instance_of(ISO3166::Parser) do |parser|
+        do_not_allow(parser).parse
+      end
+
+      ISO3166::Country.all
+    end
+
+    it "combines the data from the English and French files" do
+      rs = subject.detect { |country| "RS" == country.alpha2 }
+      rs.english_short_name.should == "SERBIA"
+      rs.french_short_name.should == "SERBIE"
     end
   end
 end

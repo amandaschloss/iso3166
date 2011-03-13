@@ -10,7 +10,7 @@ module ISO3166
 
       data_lines.reject { |line| line.chomp.empty? }.map do |line|
         name, code = line.chomp.split(";")
-        Country.new(name, code)
+        {:alpha2 => code, :short_name => name}
       end
     end
   end

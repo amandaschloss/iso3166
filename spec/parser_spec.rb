@@ -25,20 +25,20 @@ describe ISO3166::Parser do
         subject.parse(valid_input).should be_instance_of(Array)
       end
 
-      it "has Country objects as elements of the array it returns" do
-        subject.parse(valid_input).each { |element| element.should be_instance_of(ISO3166::Country) }
+      it "has hashes objects as elements of the array it returns" do
+        subject.parse(valid_input).each { |element| element.should be_instance_of(Hash) }
       end
 
       it "ignores the first and any empty lines in the input" do
         subject.parse(valid_input).length.should == 1
       end
 
-      it "creates each Country with the appropriate English short name" do
-        subject.parse(valid_input).first.english_short_name.should == "AFGHANISTAN"
+      it "parses the appropriate short name" do
+        subject.parse(valid_input).first[:short_name].should == "AFGHANISTAN"
       end
 
-      it "creates each Country with the appropriate alpha-2 code" do
-        subject.parse(valid_input).first.alpha2.should == "AF"
+      it "parses the appropriate alpha-2 code" do
+        subject.parse(valid_input).first[:alpha2].should == "AF"
       end
     end
 
@@ -67,7 +67,7 @@ describe ISO3166::Parser do
         # to UTF-8 happens as it should.
         aland_islands = subject.parse(input)[1]
 
-        aland_islands.english_short_name.scan(/./mu).size.should == 13
+        aland_islands[:short_name].scan(/./mu).size.should == 13
       end
     end
   end
