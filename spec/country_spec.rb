@@ -2,10 +2,15 @@
 require "spec_helper"
 
 describe ISO3166::Country do
-  subject { ISO3166::Country.new("", "", "") }
+  subject { ISO3166::Country.new("XX", "A COUNTRY", "UN PAYS") }
+
   it { should respond_to(:alpha2) }
   it { should respond_to(:english_short_name) }
   it { should respond_to(:french_short_name) }
+
+  it { should respond_to(:id) }
+  it { should respond_to(:code) }
+  it { should respond_to(:name) }
 
   describe "#initialize" do
     subject { ISO3166::Country.new("RS", "SERBIA", "SERBIE") }
@@ -73,6 +78,32 @@ describe ISO3166::Country do
       rs = subject.detect { |country| "RS" == country.alpha2 }
       rs.english_short_name.should == "SERBIA"
       rs.french_short_name.should == "SERBIE"
+    end
+  end
+
+  describe "#id" do
+    it "returns the same value as alpha2" do
+      subject.id.should == subject.alpha2
+    end
+  end
+
+  describe "#code" do
+    it "returns the same value as alpha2" do
+      subject.code.should == subject.alpha2
+    end
+  end
+
+  describe "#name" do
+    it "returns the same value as english_short_name" do
+      subject.name.should == subject.english_short_name
+    end
+
+    context "when ISO3166.default_language is :french" do
+      before(:each) { ISO3166.default_language = :french }
+
+      it "returns the same value as french_short_name" do
+        subject.name.should == subject.french_short_name
+      end
     end
   end
 end
